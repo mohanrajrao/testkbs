@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<!-- saved from url=(0221)https://js.stripe.com/v2/channel.html?stripe_xdm_e=file%3A%2F%2F%2FC%3A%2FUsers%2FRajan%2FDesktop%2FKBS_files%2Findex-60dd48349f692120c55c814a51855d05(1).html&stripe_xdm_c=default993615&stripe_xdm_p=1#__stripe_transport__ -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Stripe Internal Communication Channel</title>
+<script>
+if ('postMessage' in window) {
+  var stripeTrack = function(type) {
+    var timestamp = Math.round(new Date().getTime() / 1000);
+    var report = (new Image()).src = "https://q.stripe.com?event=stripejs-error&type=" +
+      encodeURIComponent(type) +
+      "&timestamp=" + timestamp +
+      "&payment_user_agent=channel.html";
+  };
+
+  if (window.parent === window) {
+    stripeTrack('ChannelParentError');
+    window.Stripe = {earlyError: true};
+  }
+  else {
+    window.onload = function() {
+      var matches = window.location.search.match(/(\?|&)stripe_xdm_e=([^&]+)/);
+      if (matches && matches.length >= 3) {
+        var outerdomain = decodeURIComponent(matches[2]);
+        try {
+          window.parent.postMessage('stripe:ack', outerdomain);
+        }
+        catch(e) {
+          stripeTrack('ChannelAckError-' + e.toString());
+        }
+      }
+      else {
+        stripeTrack('ChannelUrlError');
+      }
+    }
+  }
+}
+</script>
+</head>
+<body>
+<script src="./saved_resource(1)"></script>
+
+
+</body></html>
